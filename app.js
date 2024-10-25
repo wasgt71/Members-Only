@@ -5,6 +5,8 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const signUpRouter = require("./routes/sign-up");
 const indexRouter = require("./routes/indexRouter");
+const messageRouter = require("./routes/messagerouter");
+
 const pool = new Pool({
   user: "tristanwassilyn",
   host: "localhost",
@@ -22,9 +24,11 @@ app.set("view engine", "ejs");
 app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
+app.use("message", messageRouter);
 app.use("sign-up", signUpRouter);
 app.use("/", indexRouter);
 
+app.get("/message", (req, res) => res.render("messageform"));
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 app.get("/", (req, res) => res.render("index", { user: req.user }));
 app.get("/log-out", (req, res, next) => {
@@ -44,7 +48,6 @@ passport.use(
         [username]
       );
       const user = rows[0];
-
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
       }
