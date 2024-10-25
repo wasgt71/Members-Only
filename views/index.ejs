@@ -7,7 +7,19 @@
   <body>
     <% if (locals.user) {%>
     <h1>WELCOME BACK <%= user.username %></h1>
+    <button>Become an exclusive member</button>
+    <a href="/message">
+    <button>Write message</button>
+    </a>
     <a href="/log-out">LOG OUT</a>
+
+    <ul><% messages.map(message => { %>
+      
+    <li><%= message.message %></li>
+    
+    <%})%>
+    </ul>
+
     <% } else { %>
     <h1>please log in</h1>
     <form action="/log-in" method="POST">
