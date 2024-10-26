@@ -7,14 +7,20 @@
   <body>
     <% if (locals.user) {%>
     <h1>WELCOME BACK <%= user.username %></h1>
+    <a href="/member">
     <button>Become an exclusive member</button>
+    </a>
     <a href="/message">
     <button>Write message</button>
     </a>
     <a href="/log-out">LOG OUT</a>
 
     <ul><% messages.map(message => { %>
-      
+    
+    <% if(user.member) {%>
+    <legend><%= user.username %></legend>
+    <%}%>
+
     <li><%= message.message %></li>
     
     <%})%>

@@ -16,10 +16,11 @@ const pool = new Pool({
   port: 5432,
 });
 
-const messages = [{
-message: "Hey how are you!",
-}];
-
+const messages = [
+  {
+    message: "Hey how are you!",
+  },
+];
 
 const path = require("node:path");
 
@@ -38,7 +39,9 @@ app.use("/", indexRouter);
 app.get("/member", (req, res) => res.render("exclusivemember"));
 app.get("/message", (req, res) => res.render("messageform"));
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
-app.get("/", (req, res) => res.render("index", { user: req.user, messages: messages } ));
+app.get("/", (req, res) =>
+  res.render("index", { user: req.user, messages: messages })
+);
 app.get("/log-out", (req, res, next) => {
   req.logout((err) => {
     if (err) {
@@ -107,10 +110,35 @@ app.post(
 );
 
 app.post("/write-message", (req, res) => {
-const message = req.body;
-messages.push(message);
-res.redirect("/");
+  const message = req.body;
+  messages.push(message);
+  res.redirect("/");
+});
+
+app.post("/exc-member", (req, res) => {
+  
+  const { userid } = req.body;
+  const username = userid;
+
+  const updateMemberStatus = async (username) => {
+    try {
+      const result = await pool.query(
+        "UPDATE userinfo SET member = TRUE WHERE username = $1",
+        [username]
+      );
+      console.log(username);
+    } catch (err) {
+      console.error("Error executing query", err.stack);
+    }
+  };
+  
+  updateMemberStatus(username);
+
+  res.redirect("/");
 })
 
+
+
+app.post("/exc-member", (req, res, username) => {});
 
 app.listen(3000, () => console.log("app listening on port 3000!"));
